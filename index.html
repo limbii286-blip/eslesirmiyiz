@@ -230,7 +230,7 @@ function play(){
   h+='</div>';
  }else{
   h='<div class="card"><div class="tag">'+lab+' · SÜRE DOLDU</div><div class="qs">'+esc(qOf(G.r))+'</div>'+["b","g"].map(function(t){return '<div class="tn" style="margin-top:12px"><img src="'+IMG[t]+'" alt=""><b>'+esc(T[t].n)+'</b></div>'+box(G.r,t)}).join('')+'</div><div class="card"><h2>Puan durumu</h2>'+rank(curScore())+'</div>';
-  var ni=nextInfo();h+=ni.go===null?'<p style="text-align:center">Sonuç geliyor...</p>':(host()?'<button onclick="nextQ()">'+ni.lb+'</button>':'<p style="text-align:center">Sonraki soruyu oyunu kuran kişi açacak.</p>');
+  var ni=nextInfo();h+=ni.go===null?'<p style="text-align:center">Sonuç geliyor...</p>':(host()?'<button onclick="nextQ()">'+ni.lb+'</button>':'');
  }
  return h+hostBtns();
 }
