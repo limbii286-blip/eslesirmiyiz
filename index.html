@@ -226,7 +226,7 @@ function play(){
   var left=Math.max(0,Math.ceil((G.endsAt-now())/1000));
   h='<div class="card"><div class="tag">'+lab+'</div><div class="tm'+(left<=5?' lo':'')+'" id="tm">'+left+'</div><div class="pb"><i id="bar" style="width:'+Math.min(100,(G.endsAt-now())/((G.dur||15)*10))+'%"></i></div><div class="q">'+esc(qOf(G.r))+'</div>';
   if(mt)h+=opts(mt,false);
-  else h+='<p style="text-align:center">İzleyici olarak izliyorsun, işaretleyemezsin.</p>'+["b","g"].map(function(t){return '<div class="tag" style="margin-top:10px">'+esc(T[t].n.toUpperCase())+' ŞIKLARI</div>'+opts(t,true)}).join('');
+  else h+=["b","g"].map(function(t){return '<div class="tag" style="margin-top:10px">'+esc(T[t].n.toUpperCase())+' ŞIKLARI</div>'+opts(t,true)}).join('');
   h+='</div>';
  }else{
   h='<div class="card"><div class="tag">'+lab+' · SÜRE DOLDU</div><div class="qs">'+esc(qOf(G.r))+'</div>'+["b","g"].map(function(t){return '<div class="tn" style="margin-top:12px"><img src="'+IMG[t]+'" alt=""><b>'+esc(T[t].n)+'</b></div>'+box(G.r,t)}).join('')+'</div><div class="card"><h2>Puan durumu</h2>'+rank(curScore())+'</div>';
