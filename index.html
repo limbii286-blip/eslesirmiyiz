@@ -45,10 +45,12 @@ button.op:disabled{opacity:.8}
 .er{color:var(--no);font-size:14px;margin-top:6px}.win{width:100%;border-radius:24px;border:5px solid #fff;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #cf{position:fixed;inset:0;pointer-events:none;z-index:50}
 select{width:100%;padding:14px;border-radius:16px;border:2px solid var(--bd);background:#fff;color:var(--tx);font:700 17px "Nunito",sans-serif}
-.halo{position:relative;isolation:isolate;width:fit-content;max-width:100%;margin:0 auto}
+.halo{position:relative;z-index:2;isolation:isolate;width:fit-content;max-width:100%;margin:0 auto}
 .halo::before{content:"";position:absolute;inset:-22px -34px;z-index:-1;border-radius:60px;background:#fdf6ec;filter:blur(7px)}
 .vs{isolation:isolate}
 .vh{position:absolute;left:50%;top:-40px;bottom:-40px;width:120px;margin-left:-60px;z-index:-1;border-radius:60px;background:#fdf6ec;filter:blur(7px);pointer-events:none}
+h1.logo.md{font-size:clamp(40px,12vw,54px)}
+h1.logo.sm{font-size:clamp(28px,8.2vw,38px);line-height:1.15}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -182,13 +184,14 @@ function autoNext(){
 function startTie(){if(!host())return;var N=G.qs.length,d=durAt(N);ref(B()+"/m").update({phase:"play",r:N,dur:d,endsAt:now()+d*1000})}
 function canJudge(){var m=myRole();return m==="y"||(!RL.y&&host())}
 function judge(t){if(!canJudge())return;ref(B()+"/m").transaction(function(x){if(!x||x.phase!=="judge")return;x.phase="end";x.win=t;return x})}
+function H(t,c){return '<div class="halo"><h1 class="logo '+(c||"")+'">'+t+'</h1></div>'}
 function VS(c){return '<div class="vs'+c+'"><i class="vh"></i><img class="l" src="'+IMG.b+'" alt=""><span>VS</span><img class="r" src="'+IMG.g+'" alt=""></div>'}
 function hostBtns(){return host()?'<button class="alt" style="margin-top:18px" onclick="restartGame()">Baştan Başla</button>':''}
 function tieScr(){
- return '<h1>Berabere!</h1>'+VS('')+'<div class="card" style="margin-top:14px"><h2>Puan durumu</h2>'+rank(scores(G.r))+'</div>'+(host()?'<button onclick="startTie()">Eşitlik Bozma Sorularına Geç</button>':'<p style="text-align:center">Eşitlik bozma sorularını oyunu kuran kişi başlatacak.</p>')+hostBtns();
+ return H('Berabere!','md')+VS('')+'<div class="card" style="margin-top:14px"><h2>Puan durumu</h2>'+rank(scores(G.r))+'</div>'+(host()?'<button onclick="startTie()">Eşitlik Bozma Sorularına Geç</button>':'<p style="text-align:center">Eşitlik bozma sorularını oyunu kuran kişi başlatacak.</p>')+hostBtns();
 }
 function judgeScr(){
- return '<h1 class="sm">Yenişemediğiniz için kazanan takımı Yiğitalp İlhan belirleyecek!</h1><img class="win" src="'+IMG.y+'" alt="Yiğitalp İlhan" style="margin:4px 0 14px">'+(canJudge()?'<div class="card" style="margin-top:14px"><h2 style="text-align:center">Kazanan takımı seç</h2><button class="g" onclick="judge(\'g\')">Takım Belgrad</button><button class="b" onclick="judge(\'b\')">Takım Bosna</button></div>':'<p style="text-align:center">Yiğitalp İlhan\'ın kararı bekleniyor...</p>')+hostBtns();
+ return H('Yenişemediğiniz için kazanan takımı Yiğitalp İlhan belirleyecek!','sm')+'<img class="win" src="'+IMG.y+'" alt="Yiğitalp İlhan" style="margin:4px 0 14px">'+(canJudge()?'<div class="card" style="margin-top:14px"><h2 style="text-align:center">Kazanan takımı seç</h2><button class="g" onclick="judge(\'g\')">Takım Belgrad</button><button class="b" onclick="judge(\'b\')">Takım Bosna</button></div>':'<p style="text-align:center">Yiğitalp İlhan\'ın kararı bekleniyor...</p>')+hostBtns();
 }
 function rank(s){
  var mx=Math.max(s.b,s.g),l=["b","g"].sort(function(x,y){return s[y]-s[x]});
@@ -236,8 +239,8 @@ function play(){
 }
 function end(){
  var s=scores(G.r),t=G.win||(s.b>s.g?"b":(s.g>s.b?"g":null)),h;
- if(t)h='<h1>Tebrikler!<br>Takım '+esc(T[t].n)+' kazandı!</h1><img class="win" src="'+IMG[t]+'" alt="">';
- else h='<h1>Berabere!</h1><div class="vs"><img class="l" src="'+IMG.b+'" alt=""><img class="r" src="'+IMG.g+'" alt=""></div>';
+ if(t)h=H('Tebrikler!<br>Takım '+esc(T[t].n)+' kazandı!','md')+'<img class="win" src="'+IMG[t]+'" alt="">';
+ else h=H('Berabere!','md')+'<div class="vs"><img class="l" src="'+IMG.b+'" alt=""><img class="r" src="'+IMG.g+'" alt=""></div>';
  return h+'<div class="card" style="margin-top:14px"><h2>Final skoru</h2>'+rank(s)+'</div>'+(host()?'<button onclick="playAgain()">Tekrar Oyna</button><button class="alt" onclick="restartGame()">Baştan Başla</button>':'<p style="text-align:center">Yeni oyunu oyunu kuran kişi açacak.</p>');
 }
 function render(){
