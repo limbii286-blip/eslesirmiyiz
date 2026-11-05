@@ -46,9 +46,11 @@ button.op:disabled{opacity:.8}
 #cf{position:fixed;inset:0;pointer-events:none;z-index:50}
 select{width:100%;padding:14px;border-radius:16px;border:2px solid var(--bd);background:#fff;color:var(--tx);font:700 17px "Nunito",sans-serif}
 .halo{position:relative;z-index:2;isolation:isolate;width:fit-content;max-width:100%;margin:0 auto}
-.halo::before{content:"";position:absolute;inset:-22px -34px;z-index:-1;border-radius:60px;background:#fdf6ec;filter:blur(7px)}
+.halo::before{display:none}
 .vs{isolation:isolate}
-.vh{position:absolute;left:50%;top:-40px;bottom:-40px;width:120px;margin-left:-60px;z-index:-1;border-radius:60px;background:#fdf6ec;filter:blur(7px);pointer-events:none}
+.vh{position:absolute;left:50%;top:-40px;bottom:-40px;width:120px;margin-left:-60px;visibility:hidden;pointer-events:none}
+#hv{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none;overflow:hidden}
+#hv i{position:absolute;border-radius:50%;background:#fdf6ec;box-shadow:0 0 4px 3px #fdf6ec}
 h1.logo.md{font-size:clamp(40px,12vw,54px)}
 h1.logo.sm{font-size:clamp(28px,8.2vw,38px);line-height:1.15}
 </style>
@@ -57,6 +59,7 @@ h1.logo.sm{font-size:clamp(28px,8.2vw,38px);line-height:1.15}
 </head>
 <body>
 <canvas id="cf"></canvas>
+<div id="hv"></div>
 <div id="app"></div>
 <script>
 /* ===== FIREBASE AYARLARI ===== */
@@ -243,6 +246,31 @@ function end(){
  else h=H('Berabere!','md')+'<div class="vs"><img class="l" src="'+IMG.b+'" alt=""><img class="r" src="'+IMG.g+'" alt=""></div>';
  return h+'<div class="card" style="margin-top:14px"><h2>Final skoru</h2>'+rank(s)+'</div>'+(host()?'<button onclick="playAgain()">Tekrar Oyna</button><button class="alt" onclick="restartGame()">Baştan Başla</button>':'<p style="text-align:center">Yeni oyunu oyunu kuran kişi açacak.</p>');
 }
+/* ===== KALP ORTME: basligin/VS'nin arkasinda tamamen kalan kalpler gizlenir, yarim kalanlar bütün gorunur ===== */
+var HR=[[778,22,40,36],[27,23,40,35],[521,24,40,35],[271,35,41,37],[664,112,40,36],[399,113,40,38],[133,117,41,36],[19,203,39,36],[270,205,39,37],[788,205,39,34],[537,208,41,36],[404,298,40,36],[123,301,40,37],[674,316,40,37],[525,401,39,36],[282,402,40,37],[793,405,39,35],[24,409,40,35],[397,495,41,38],[666,496,40,36],[136,505,43,37],[18,593,40,36],[787,596,40,34],[535,597,42,38],[271,598,40,37],[404,690,40,36],[133,698,41,38],[674,704,40,35],[281,792,40,36],[789,797,39,35],[535,799,40,34],[23,802,41,35],[404,887,40,37],[667,890,40,36],[132,895,42,37],[270,984,40,37],[533,993,42,38],[793,993,40,36],[19,994,39,35],[401,1084,40,37],[128,1088,40,37],[674,1100,40,36],[281,1187,40,37],[791,1188,39,35],[536,1190,39,34],[24,1192,40,35],[405,1278,40,36],[132,1287,40,37],[674,1292,39,36],[525,1380,40,38],[278,1381,41,37],[21,1382,40,35],[792,1390,40,36],[398,1474,40,37],[667,1478,40,35],[133,1482,41,36],[279,1572,39,36],[531,1574,41,38],[788,1575,40,34],[22,1580,40,34],[132,1670,41,37],[405,1674,41,36],[673,1675,39,35],[270,1770,41,38],[22,1772,40,36],[793,1775,40,36],[535,1776,41,36]],HW=853,HH=1844;
+function hearts(){
+ var hv=document.getElementById("hv");if(!hv)return;
+ var W=hv.clientWidth,Hh=hv.clientHeight;if(!W||!Hh)return;
+ var sc=Math.max(W/HW,Hh/HH),ox=(W-HW*sc)/2,oy=(Hh-HH*sc)/2,rg=[],i,j,k;
+ var a=document.querySelectorAll("#app .halo");
+ for(i=0;i<a.length;i++){var r=a[i].getBoundingClientRect();rg.push({l:r.left-34,t:r.top-22,r:r.right+34,b:r.bottom+22})}
+ a=document.querySelectorAll("#app .vh");
+ for(i=0;i<a.length;i++){var q=a[i].getBoundingClientRect();rg.push({l:q.left,t:q.top,r:q.right,b:q.bottom})}
+ if(!rg.length){hv.innerHTML="";return}
+ function ins(g,x,y){var d=Math.min(60,(g.r-g.l)/2,(g.b-g.t)/2),cx=Math.min(Math.max(x,g.l+d),g.r-d),cy=Math.min(Math.max(y,g.t+d),g.b-d);return (x-cx)*(x-cx)+(y-cy)*(y-cy)<=d*d}
+ var o="";
+ HR.forEach(function(h){
+  var x=ox+h[0]*sc,y=oy+h[1]*sc,w=h[2]*sc,hh=h[3]*sc;
+  if(x>W||y>Hh||x+w<0||y+hh<0)return;
+  var c=0;
+  for(j=0;j<6;j++)for(k=0;k<6;k++){var px=x+w*(j+.5)/6,py=y+hh*(k+.5)/6;if(rg.some(function(g){return ins(g,px,py)}))c++}
+  if(c/36>=.75){var p=Math.max(2,w*.12);o+='<i style="left:'+(x-p)+'px;top:'+(y-p)+'px;width:'+(w+2*p)+'px;height:'+(hh+2*p)+'px"></i>'}
+ });
+ hv.innerHTML=o;
+}
+window.addEventListener("resize",hearts);
+window.addEventListener("scroll",function(){requestAnimationFrame(hearts)},{passive:true});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(hearts);
 function render(){
  var h="",E=err?'<div class="er">'+esc(err)+'</div>':'';
  if(!joined){
@@ -255,6 +283,7 @@ function render(){
   else if(G.phase==="end"){h=end();if(!cfOn){cfOn=true;confetti()}}
  else h=play();
  app.innerHTML=h;
+ hearts();setTimeout(hearts,350);
 }
 setInterval(function(){
  if(!joined||!G||G.phase!=="play")return;
